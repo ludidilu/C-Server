@@ -1,0 +1,12 @@
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\SuperServer.dll
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\SuperServer.pdb
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\obj\Debug\SuperServer.csprojResolveAssemblyReference.cache
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\obj\Debug\SuperServer.dll
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\obj\Debug\SuperServer.pdb
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Common.dll
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Interfaces.dll
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Redis.dll
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Text.dll
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Common.xml
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Redis.xml
+C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Text.xml
