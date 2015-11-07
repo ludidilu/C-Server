@@ -6,23 +6,16 @@ using System.Collections.Generic;
 
 namespace SuperServer.superService
 {
-    public class SuperUserService<T> : SuperService where T : UserData, new()
+    public class SuperUserService<T> : SuperUserServiceBase where T : UserData, new()
     {
-        protected static Dictionary<BaseProto, Action<BaseProto>> dataHandleDic = new Dictionary<BaseProto, Action<BaseProto>>();
-
         protected T userData;
-        private IServerUnit serverUnit;
-        private Action replaceServerUnitCallBack;
 
-        private bool isWaittingForResponse;
-
-        internal void Init(T _userData, IServerUnit _serverUnit)
+        internal override void SetUserData(UserData _userData)
         {
-            userData = _userData;
-            serverUnit = _serverUnit;
+            userData = _userData as T;
         }
 
-        internal void Login<F>(string _userName, string _password, ServerUnit<F, T> _serverUnit) where F : SuperUserService<T>, new()
+        internal override void Login(string _userName, string _password, ServerUnit _serverUnit)
         {
             bool result = userData.passward.Equals(_password);
 
@@ -32,64 +25,7 @@ namespace SuperServer.superService
             }
             else
             {
-                if (serverUnit != null)
-                {
-                    Kick();
-
-                    serverUnit.Kick();
-
-                    serverUnit = null;
-                }
-
-                if (isWaittingForResponse)
-                {
-                    replaceServerUnitCallBack = delegate ()
-                    {
-                        serverUnit = _serverUnit;
-
-                        _serverUnit.GetLoginResult(this as F);
-                    };
-                }
-                else
-                {
-                    serverUnit = _serverUnit;
-
-                    _serverUnit.GetLoginResult(this as F);
-                }
-            }
-        }
-
-        protected virtual void Kick()
-        {
-            
-        }
-
-        internal void GetData(BaseProto _data)
-        {
-            isWaittingForResponse = true;
-
-            dataHandleDic[_data](_data);
-        }
-
-        protected void SendData(bool _beginReceive, BaseProto _data)
-        {
-            if (_beginReceive)
-            {
-                isWaittingForResponse = false;
-            }
-
-            if(serverUnit != null)
-            {
-                serverUnit.SendData(_beginReceive, _data);
-            }
-            else
-            {
-                if(replaceServerUnitCallBack != null)
-                {
-                    replaceServerUnitCallBack();
-
-                    replaceServerUnitCallBack = null;
-                }
+                base.Login(_userName, _password, _serverUnit);
             }
         }
     }

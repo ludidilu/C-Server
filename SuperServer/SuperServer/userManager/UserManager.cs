@@ -6,32 +6,32 @@ using SuperServer.server;
 
 namespace SuperServer.userManager
 {
-    public class UserManager<T,U> : SuperService where T : SuperUserService<U>, new() where U : UserData, new()
+    internal class UserManager : SuperService
     {
-        private static UserManager<T,U> _Instance;
+        private static UserManager _Instance;
 
-        internal static UserManager<T,U> Instance
+        internal static UserManager Instance
         {
             get
             {
                 if (_Instance == null)
                 {
-                    _Instance = new UserManager<T,U>();
+                    _Instance = new UserManager();
                 }
 
                 return _Instance;
             }
         }
 
-        private Dictionary<string, T> dic = new Dictionary<string , T>();
+        private Dictionary<string, SuperUserServiceBase> dic = new Dictionary<string , SuperUserServiceBase>();
 
-        internal void Login(string _userName,string _password,ServerUnit<T,U> _serverUnit) 
+        internal void Login(string _userName,string _password,ServerUnit _serverUnit) 
         {
             if (dic.ContainsKey(_userName))
             {
-                T userService = dic[_userName];
+                SuperUserServiceBase userService = dic[_userName];
                 
-                Action<T> callBack = delegate (T _service)
+                Action<SuperUserServiceBase> callBack = delegate (SuperUserServiceBase _service)
                 {
                     _service.Login(_userName, _password, _serverUnit);
                 };
@@ -49,13 +49,15 @@ namespace SuperServer.userManager
             }
         }
 
-        internal void GetLoginResult(U _userData,ServerUnit<T,U> _serverUnit)
+        internal void GetLoginResult(UserData _userData,ServerUnit _serverUnit)
         {
             if(_userData != null)
             {
-                T userService = new T();
+                SuperUserServiceBase userService = Server.getUserService();
 
-                userService.Init(_userData, _serverUnit);
+                userService.SetUserData(_userData);
+
+                userService.SetServerUnit(_serverUnit);
 
                 dic.Add(_userData.userName, userService);
 

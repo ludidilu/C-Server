@@ -8,12 +8,41 @@ namespace SuperServer.server
 {
 
 
-    public class Server<T,U> where T : SuperUserService<U>,new() where U : UserData,new()
+    public class Server
     {
+        private static Server _Instance;
+
+        public static Server Instance
+        {
+            get
+            {
+                if(_Instance == null)
+                {
+                    _Instance = new Server();
+                }
+
+                return _Instance;
+            }
+        }
+
         private Socket socket;
 
-        public void Start(string _path, int _port)
+        internal static Func<SuperUserServiceBase> getUserService;
+
+        internal static Func<UserData> getUserData;
+
+        public void Start<T,U>(string _path, int _port) where T : SuperUserService<U>,new() where U : UserData,new()
         {
+            getUserService = delegate(){
+
+                return new T();
+            };
+
+            getUserData = delegate ()
+            {
+                return new U();
+            };
+            
             socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             socket.Bind(new IPEndPoint(IPAddress.Parse(_path), _port));
@@ -34,7 +63,7 @@ namespace SuperServer.server
 
             Console.WriteLine("One user connected");
 
-            ServerUnit<T,U> unit = new ServerUnit<T, U>(clientSocket);
+            ServerUnit unit = new ServerUnit(clientSocket);
 
             unit.Start();
 

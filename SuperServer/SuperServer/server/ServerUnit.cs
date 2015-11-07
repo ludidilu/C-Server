@@ -8,7 +8,7 @@ using SuperServer.userManager;
 
 namespace SuperServer.server
 {
-    internal class ServerUnit<T,U> : IServerUnit where T : SuperUserService<U>,new() where U : UserData , new()
+    internal class ServerUnit
     {
         private Socket socket;
 
@@ -34,7 +34,7 @@ namespace SuperServer.server
 
         private BinaryFormatter sendFormatter = new BinaryFormatter();
 
-        private T userService;
+        private SuperUserServiceBase userService;
 
         public ServerUnit(Socket _socket)
         {
@@ -128,7 +128,7 @@ namespace SuperServer.server
         {
             if (userService != null)
             {
-                Action<T> callBack = delegate (T _service)
+                Action<SuperUserServiceBase> callBack = delegate (SuperUserServiceBase _service)
                 {
                     _service.GetData(_data);
                 };
@@ -139,12 +139,12 @@ namespace SuperServer.server
             {
                 LoginProto loginProto = _data as LoginProto;
 
-                Action<UserManager<T, U>> callBack = delegate (UserManager<T, U> _service)
+                Action<UserManager> callBack = delegate (UserManager _service)
                 {
                     _service.Login(loginProto.userName, loginProto.password, this);
                 };
 
-                UserManager<T,U>.Instance.Process(callBack);
+                UserManager.Instance.Process(callBack);
             }
         }
 
@@ -176,7 +176,7 @@ namespace SuperServer.server
             }
         }
 
-        internal void GetLoginResult(T _userService)
+        internal void GetLoginResult(SuperUserServiceBase _userService)
         {
             LoginResultProto result = new LoginResultProto();
 

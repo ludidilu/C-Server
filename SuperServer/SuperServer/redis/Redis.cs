@@ -36,7 +36,7 @@ namespace SuperServer.redis
             redisClient = new RedisClient(_host, _port);
         }
 
-        internal void Login<T,U>(string _userName,string _password,ServerUnit<T,U> _serverUnit) where T : SuperUserService<U>, new() where U : UserData, new()
+        internal void Login(string _userName,string _password,ServerUnit _serverUnit)
         {
             string key = string.Format("userName_{0}", _userName);
             
@@ -54,28 +54,28 @@ namespace SuperServer.redis
 
                     stream.Position = 0;
 
-                    U userData = (U)formatter.Deserialize(stream);
+                    UserData userData = (UserData)formatter.Deserialize(stream);
 
-                    Action<UserManager<T,U>> callBack = delegate (UserManager<T, U> _service)
+                    Action<UserManager> callBack = delegate (UserManager _service)
                     {
                         _service.GetLoginResult(userData, _serverUnit);
                     };
 
-                    UserManager<T, U>.Instance.Process(callBack);
+                    UserManager.Instance.Process(callBack);
                 }
                 else
                 {
-                    Action<UserManager<T, U>> callBack = delegate (UserManager<T, U> _service)
+                    Action<UserManager> callBack = delegate (UserManager _service)
                     {
                         _service.GetLoginResult(null, _serverUnit);
                     };
 
-                    UserManager<T, U>.Instance.Process(callBack);
+                    UserManager.Instance.Process(callBack);
                 }
             }
             else
             {
-                U userData = new U();
+                UserData userData = Server.getUserData();
 
                 userData.Init(_userName, _password);
 
@@ -89,12 +89,12 @@ namespace SuperServer.redis
 
                 redisClient.Set(key, _password);
 
-                Action<UserManager<T, U>> callBack = delegate (UserManager<T, U> _service)
+                Action<UserManager> callBack = delegate (UserManager _service)
                 {
                     _service.GetLoginResult(userData, _serverUnit);
                 };
 
-                UserManager<T, U>.Instance.Process(callBack);
+                UserManager.Instance.Process(callBack);
             }
         }
     }
