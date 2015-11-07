@@ -10,3 +10,17 @@ C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Text
 C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Common.xml
 C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Redis.xml
 C:\UnityProjects\SuperServer\SuperServer\SuperServer\bin\Debug\ServiceStack.Text.xml
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\SuperServer.dll
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\SuperServer.pdb
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\ServiceStack.Common.dll
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\ServiceStack.Interfaces.dll
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\ServiceStack.Redis.dll
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\ServiceStack.Text.dll
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\ServiceStack.Common.xml
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\ServiceStack.Redis.xml
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\ServiceStack.Text.xml
+C:\UnityProjects\C-Server\SuperServer\SuperServer\obj\Debug\SuperServer.csprojResolveAssemblyReference.cache
+C:\UnityProjects\C-Server\SuperServer\SuperServer\obj\Debug\SuperServer.dll
+C:\UnityProjects\C-Server\SuperServer\SuperServer\obj\Debug\SuperServer.pdb
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\SuperProto.dll
+C:\UnityProjects\C-Server\SuperServer\SuperServer\bin\Debug\SuperProto.pdb

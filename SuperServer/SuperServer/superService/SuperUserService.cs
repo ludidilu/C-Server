@@ -1,7 +1,7 @@
 ﻿using System;
 using SuperServer.userManager;
 using SuperServer.server;
-using SuperServer.protocol;
+using SuperProto;
 using System.Collections.Generic;
 
 namespace SuperServer.superService
@@ -11,7 +11,7 @@ namespace SuperServer.superService
         protected static Dictionary<BaseProto, Action<BaseProto>> dataHandleDic = new Dictionary<BaseProto, Action<BaseProto>>();
 
         protected T userData;
-        protected IServerUnit serverUnit;
+        private IServerUnit serverUnit;
         private Action replaceServerUnitCallBack;
 
         private bool isWaittingForResponse;

@@ -1,15 +1,13 @@
-﻿using SuperServer.protocol;
+﻿using SuperProto;
 using SuperServer.superService;
 using SuperServer.userManager;
 
 namespace SuperServer.server
 {
-    public interface IServerUnit
+    internal interface IServerUnit
     {
         void Kick();
 
         void SendData(bool _beginReceive, BaseProto _data);
-
-        //void GetResultFromUserManager<T,U>(T _userService) where T : SuperUserService<U>,new() where U : UserData,new();
     }
 }

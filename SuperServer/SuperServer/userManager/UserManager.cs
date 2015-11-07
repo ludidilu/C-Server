@@ -10,7 +10,7 @@ namespace SuperServer.userManager
     {
         private static UserManager<T,U> _Instance;
 
-        public static UserManager<T,U> Instance
+        internal static UserManager<T,U> Instance
         {
             get
             {
@@ -42,7 +42,7 @@ namespace SuperServer.userManager
             {
                 Action<Redis> callBack = delegate (Redis _service)
                 {
-                    _service.Login<T,U>(_userName, _password, _serverUnit);
+                    _service.Login(_userName, _password, _serverUnit);
                 };
 
                 Redis.Instance.Process(callBack);

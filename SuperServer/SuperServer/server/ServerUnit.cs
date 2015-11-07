@@ -3,12 +3,12 @@ using System.Net.Sockets;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using SuperServer.superService;
-using SuperServer.protocol;
+using SuperProto;
 using SuperServer.userManager;
 
 namespace SuperServer.server
 {
-    public class ServerUnit<T,U> : IServerUnit where T : SuperUserService<U>,new() where U : UserData , new()
+    internal class ServerUnit<T,U> : IServerUnit where T : SuperUserService<U>,new() where U : UserData , new()
     {
         private Socket socket;
 
@@ -176,7 +176,7 @@ namespace SuperServer.server
             }
         }
 
-        public void GetLoginResult(T _userService)
+        internal void GetLoginResult(T _userService)
         {
             LoginResultProto result = new LoginResultProto();
 
