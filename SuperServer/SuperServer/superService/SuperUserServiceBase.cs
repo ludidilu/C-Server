@@ -64,20 +64,20 @@ namespace SuperServer.superService
             dataHandleDic[_data](_data);
         }
 
-        protected void SendData(bool _beginReceive, BaseProto _data)
+        protected void SendData(BaseProto _data)
         {
-            if (_beginReceive)
+            if (_data.type == PROTO_TYPE.S2C)
             {
                 isWaittingForResponse = false;
             }
 
             if (serverUnit != null)
             {
-                serverUnit.SendData(_beginReceive, _data);
+                serverUnit.SendData(_data);
             }
             else
             {
-                if (replaceServerUnitCallBack != null)
+                if (!isWaittingForResponse && replaceServerUnitCallBack != null)
                 {
                     replaceServerUnitCallBack();
 

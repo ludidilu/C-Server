@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.Generic;
 using SuperServer.superService;
 using SuperProto;
 using SuperServer.userManager;
@@ -10,25 +11,31 @@ namespace SuperServer.server
 {
     internal class ServerUnit
     {
+        private static readonly int HEAD_LENGTH = 4;
+
+        private static readonly int BODY_LENGTH = 1024;
+
         private Socket socket;
 
         private int headLength;
 
         private int headOffset;
 
-        private byte[] headBytes = new byte[4];
+        private byte[] headBuffer = new byte[HEAD_LENGTH];
 
         private int bodyLength;
 
         private int bodyOffset;
 
-        private byte[] bodyBytes = new byte[1024];
-
-        private byte[] sendBytes;
-
+        private byte[] bodyBuffer = new byte[BODY_LENGTH];
+        
         private MemoryStream receiveStream = new MemoryStream();
 
         private BinaryFormatter reveiveFormatter = new BinaryFormatter();
+
+        private bool isSendingData;
+
+        private List<BaseProto> sendPool = new List<BaseProto>();
 
         private MemoryStream sendStream = new MemoryStream();
 
@@ -43,19 +50,19 @@ namespace SuperServer.server
 
         internal void Start()
         {
-            BeginReceive();
-        }
-
-        private void BeginReceive()
-        {
-            headLength = 4;
+            headLength = HEAD_LENGTH;
 
             headOffset = 0;
 
-            socket.BeginReceive(headBytes, headOffset, headLength, SocketFlags.None, GetHead, null);
+            ReceiveHead();
         }
 
-        private void GetHead(IAsyncResult _result)
+        private void ReceiveHead()
+        {
+            socket.BeginReceive(headBuffer, headOffset, headLength, SocketFlags.None, ReceiveHeadEnd, null);
+        }
+
+        private void ReceiveHeadEnd(IAsyncResult _result)
         {
             try
             {
@@ -64,8 +71,6 @@ namespace SuperServer.server
                 if (i == 0)
                 {
                     Console.WriteLine("disconnect!");
-
-                    return;
                 }
                 else if (i < headLength)
                 {
@@ -73,34 +78,39 @@ namespace SuperServer.server
 
                     headLength = headLength - i;
 
-                    socket.BeginReceive(headBytes, headOffset, headLength, SocketFlags.None, GetHead, null);
+                    ReceiveHead();
                 }
                 else
                 {
-                    bodyLength = BitConverter.ToInt32(headBytes, 0);
+                    bodyLength = BitConverter.ToInt32(headBuffer, 0);
 
                     bodyOffset = 0;
 
-                    socket.BeginReceive(bodyBytes, bodyOffset, bodyLength, SocketFlags.None, GetBody, null);
+                    headLength = HEAD_LENGTH;
+
+                    headOffset = 0;
+
+                    ReceiveBody();
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine("disconnect!");
-
-                return;
+                Console.WriteLine("disconnect!" + e.ToString());
             }
         }
 
-        private void GetBody(IAsyncResult _result)
+        private void ReceiveBody()
+        {
+            socket.BeginReceive(bodyBuffer, bodyOffset, bodyLength, SocketFlags.None, ReceiveBodyEnd, null);
+        }
+
+        private void ReceiveBodyEnd(IAsyncResult _result)
         {
             int i = socket.EndReceive(_result);
 
             if (i == 0)
             {
                 Console.WriteLine("disconnect!");
-
-                return;
             }
             else if(i < bodyLength)
             {
@@ -108,13 +118,13 @@ namespace SuperServer.server
 
                 bodyLength = bodyLength - i;
 
-                socket.BeginReceive(bodyBytes, bodyOffset, bodyLength, SocketFlags.None, GetBody, null);
+                ReceiveBody();
             }
             else
             {
                 receiveStream.Position = 0;
 
-                receiveStream.Write(bodyBytes, 0, i);
+                receiveStream.Write(bodyBuffer, 0, bodyOffset + i);
 
                 receiveStream.Position = 0;
 
@@ -148,23 +158,42 @@ namespace SuperServer.server
             }
         }
 
-        public void SendData(bool _beginReceive,BaseProto _data)
+        public void SendData(BaseProto _data)
         {
-            sendFormatter.Serialize(sendStream, _data);
+            lock (sendPool)
+            {
+                if (!isSendingData)
+                {
+                    isSendingData = true;
+                }
+                else
+                {
+                    sendPool.Add(_data);
 
-            sendBytes = sendStream.GetBuffer();
-            
-            socket.BeginSend(BitConverter.GetBytes(sendBytes.Length), 0, 4, SocketFlags.None, SendHead, _beginReceive);
+                    return;
+                }
+            }
+
+            SendDataReal(_data);
         }
 
-        private void SendHead(IAsyncResult _result)
+        private void SendDataReal(BaseProto _data)
+        { 
+            sendFormatter.Serialize(sendStream, _data);
+                
+            bool beginReceive = _data.type == PROTO_TYPE.S2C;
+                
+            socket.BeginSend(BitConverter.GetBytes(sendStream.GetBuffer().Length), 0, HEAD_LENGTH, SocketFlags.None, SendHeadEnd, beginReceive);
+        }
+
+        private void SendHeadEnd(IAsyncResult _result)
         {
             socket.EndSend(_result);
-
-            socket.BeginSend(sendBytes, 0, sendBytes.Length, SocketFlags.None, SendBody, _result.AsyncState);
+            
+            socket.BeginSend(sendStream.GetBuffer(), 0, sendStream.GetBuffer().Length, SocketFlags.None, SendBodyEnd, _result);
         }
 
-        private void SendBody(IAsyncResult _result)
+        private void SendBodyEnd(IAsyncResult _result)
         {
             socket.EndSend(_result);
 
@@ -172,7 +201,28 @@ namespace SuperServer.server
 
             if (beginReceive)
             {
-                BeginReceive();
+                ReceiveHead();
+            }
+
+            BaseProto sendData = null;
+
+            lock (sendPool)
+            {
+                if (sendPool.Count > 0)
+                {
+                    sendData = sendPool[0];
+
+                    sendPool.RemoveAt(0);
+                }
+                else
+                {
+                    isSendingData = false;
+                }
+            }
+
+            if(sendData != null)
+            { 
+                SendDataReal(sendData);
             }
         }
 
@@ -193,7 +243,7 @@ namespace SuperServer.server
 
             Console.WriteLine("LoginResult:{0}", result.result);
 
-            SendData(true, result);
+            SendData(result);
         }
 
         public void Kick()
