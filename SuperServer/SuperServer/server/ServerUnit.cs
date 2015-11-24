@@ -178,9 +178,11 @@ namespace SuperServer.server
         }
 
         private void SendDataReal(BaseProto _data)
-        { 
+        {
             sendFormatter.Serialize(sendStream, _data);
-                
+
+            sendStream.Position = 0;
+
             bool beginReceive = _data.type == PROTO_TYPE.S2C;
                 
             socket.BeginSend(BitConverter.GetBytes(sendStream.GetBuffer().Length), 0, HEAD_LENGTH, SocketFlags.None, SendHeadEnd, beginReceive);
@@ -190,7 +192,7 @@ namespace SuperServer.server
         {
             socket.EndSend(_result);
             
-            socket.BeginSend(sendStream.GetBuffer(), 0, sendStream.GetBuffer().Length, SocketFlags.None, SendBodyEnd, _result);
+            socket.BeginSend(sendStream.GetBuffer(), 0, sendStream.GetBuffer().Length, SocketFlags.None, SendBodyEnd, _result.AsyncState);
         }
 
         private void SendBodyEnd(IAsyncResult _result)

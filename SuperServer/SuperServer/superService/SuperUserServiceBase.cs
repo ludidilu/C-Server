@@ -3,12 +3,18 @@ using SuperServer.userManager;
 using SuperServer.server;
 using SuperProto;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace SuperServer.superService
 {
     public class SuperUserServiceBase : SuperService
     {
-        public static Dictionary<BaseProto, Action<BaseProto>> dataHandleDic = new Dictionary<BaseProto, Action<BaseProto>>();
+        private static Dictionary<Type, Action<SuperUserServiceBase, BaseProto>> dataHandleDic = new Dictionary<Type, Action<SuperUserServiceBase, BaseProto>>();
+
+        public static void SetDataHandle<T>(Action<SuperUserServiceBase, BaseProto> _callBack) where T : BaseProto
+        {
+            dataHandleDic.Add(typeof(T), _callBack);
+        }
 
         private ServerUnit serverUnit;
         private Action replaceServerUnitCallBack;
@@ -60,8 +66,8 @@ namespace SuperServer.superService
         internal void GetData(BaseProto _data)
         {
             isWaittingForResponse = true;
-
-            dataHandleDic[_data](_data);
+            
+            dataHandleDic[_data.GetType()](this, _data);
         }
 
         protected void SendData(BaseProto _data)
