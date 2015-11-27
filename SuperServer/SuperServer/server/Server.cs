@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Net;
 using SuperServer.userManager;
 using SuperServer.superService;
+using SuperProto;
 
 namespace SuperServer.server
 {
@@ -42,7 +43,14 @@ namespace SuperServer.server
             {
                 return new U();
             };
-            
+
+            Action<SuperUserServiceBase, BaseProto> callBack = delegate (SuperUserServiceBase _service, BaseProto _data)
+            {
+                _service.SendUserData(_data as UserDataProto);
+            };
+
+            SuperUserServiceBase.SetDataHandle<UserDataProto>(callBack);
+
             socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             socket.Bind(new IPEndPoint(IPAddress.Parse(_path), _port));

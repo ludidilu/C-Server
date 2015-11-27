@@ -56,6 +56,10 @@ namespace SuperServer.superService
                 _serverUnit.GetLoginResult(this);
             }
         }
+        
+        internal virtual void SendUserData(UserDataProto _proto)
+        {
+        }
 
         protected virtual void Kick()
         {

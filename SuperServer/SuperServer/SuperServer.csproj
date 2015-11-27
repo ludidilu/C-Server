@@ -66,8 +66,11 @@
     <Compile Include="superService\SuperService.cs" />
     <Compile Include="superService\SuperUserService.cs" />
     <Compile Include="superService\SuperUserServiceBase.cs" />
+    <Compile Include="userManager\DicValueData.cs" />
+    <Compile Include="userManager\IBaseData.cs" />
     <Compile Include="userManager\UserData.cs" />
     <Compile Include="userManager\UserManager.cs" />
+    <Compile Include="userManager\ValueData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

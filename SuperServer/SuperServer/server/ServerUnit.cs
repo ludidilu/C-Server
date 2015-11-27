@@ -13,7 +13,7 @@ namespace SuperServer.server
     {
         private static readonly int HEAD_LENGTH = 4;
 
-        private static readonly int BODY_LENGTH = 1024;
+        private static readonly int BODY_LENGTH = 10240;
 
         private Socket socket;
 
@@ -136,6 +136,8 @@ namespace SuperServer.server
 
         private void GetData(BaseProto _data)
         {
+            Console.WriteLine("GetData:" + _data.GetType().ToString());
+
             if (userService != null)
             {
                 Action<SuperUserServiceBase> callBack = delegate (SuperUserServiceBase _service)
@@ -184,7 +186,9 @@ namespace SuperServer.server
             sendStream.Position = 0;
 
             bool beginReceive = _data.type == PROTO_TYPE.S2C;
-                
+
+            Console.WriteLine("SendDataReal:" + _data.GetType().ToString());
+
             socket.BeginSend(BitConverter.GetBytes(sendStream.GetBuffer().Length), 0, HEAD_LENGTH, SocketFlags.None, SendHeadEnd, beginReceive);
         }
 
@@ -230,22 +234,22 @@ namespace SuperServer.server
 
         internal void GetLoginResult(SuperUserServiceBase _userService)
         {
-            LoginResultProto result = new LoginResultProto();
+            LoginResultProto proto = new LoginResultProto();
 
             if (_userService != null)
             {
                 userService = _userService;
 
-                result.result = true;
+                proto.result = true;
             }
             else
             {
-                result.result = false;
+                proto.result = false;
             }
 
-            Console.WriteLine("LoginResult:{0}", result.result);
+            Console.WriteLine("LoginResult:{0}", proto.result);
 
-            SendData(result);
+            SendData(proto);
         }
 
         public void Kick()

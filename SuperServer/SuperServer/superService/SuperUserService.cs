@@ -28,5 +28,15 @@ namespace SuperServer.superService
                 base.Login(_userName, _password, _serverUnit);
             }
         }
+
+        internal override void SendUserData(UserDataProto _proto)
+        {
+            SendData(userData.GetAllData());
+        }
+
+        protected void SendChangeData()
+        {
+            SendData(userData.GetChangeData());
+        }
     }
 }

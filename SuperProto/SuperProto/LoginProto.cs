@@ -17,7 +17,7 @@ namespace SuperProto
     public class LoginResultProto : BaseProto
     {
         public bool result;
-
+        
         public LoginResultProto()
         {
             type = PROTO_TYPE.S2C;
