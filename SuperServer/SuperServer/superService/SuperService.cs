@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using SuperServer.locker;
 
 namespace SuperServer.superService
 {
-    class SuperServiceLocker
-    {
-    }
-
     public class SuperService
     {
-        private SuperServiceLocker processLocker = new SuperServiceLocker();
-        private SuperServiceLocker callLocker = new SuperServiceLocker();
+        private readonly SuperLocker processLocker = new SuperLocker();
+        private readonly SuperLocker callLocker = new SuperLocker();
 
         private List<Delegate> actionList = new List<Delegate>();
 

@@ -5,6 +5,7 @@ using SuperServer.userManager;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using SuperServer.server;
+using SuperServer.locker;
 
 namespace SuperServer.redis
 {
