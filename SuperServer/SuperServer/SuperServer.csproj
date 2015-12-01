@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="locker\SuperLocker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="redis\Redis.cs" />
     <Compile Include="server\Server.cs" />
