@@ -14,30 +14,71 @@ namespace SuperProto
         }
     }
 
-    [Serializable]
-    public class Value<T> where T : struct
+    public interface ValueBase
     {
-        public string name;
-        public T data;
+        void SetData(object _obj);
     }
 
     [Serializable]
-    public class Dic<T> where T : struct
+    public class Value<T> : ValueBase where T : struct
+    {
+        public string name;
+        public T data;
+
+        public void SetData(object _obj)
+        {
+            _obj.GetType().GetField(name).SetValue(_obj, data);
+        }
+    }
+
+    public interface DicBase
+    {
+        void SetData(object _obj);
+    }
+
+
+    [Serializable]
+    public class Dic<T> : DicBase where T : struct
     {
         public string name;
         public int[] index;
         public T[] data;
+
+        public void SetData(object _obj)
+        {
+            Dictionary<int, T> dic = new Dictionary<int, T>();
+
+            for(int i = 0; i < index.Length; i++)
+            {
+                dic.Add(index[i], data[i]);
+            }
+
+            _obj.GetType().GetField(name).SetValue(_obj, dic);
+        }
     }
 
     [Serializable]
     public class UserDataResultProto : BaseProto
     {
-        public List<object> valueList = new List<object>();
-        public List<object> dicList = new List<object>();
+        public List<ValueBase> valueList = new List<ValueBase>();
+        public List<DicBase> dicList = new List<DicBase>();
 
         public UserDataResultProto()
         {
             type = PROTO_TYPE.S2C;
+        }
+
+        public void SetData(object _obj)
+        {
+            foreach(ValueBase valueBase in valueList)
+            {
+                valueBase.SetData(_obj);
+            }
+
+            foreach(DicBase dicBase in dicList)
+            {
+                dicBase.SetData(_obj);
+            }
         }
     }
 }

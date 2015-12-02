@@ -5,7 +5,7 @@ using SuperProto;
 namespace SuperServer.userManager
 {
     [Serializable]
-    public class ValueData<T> : ISerializable,IBaseData where T : struct
+    public class ValueData<T> : ISerializable,IValueData where T : struct
     {
         private string name;
 
@@ -62,7 +62,7 @@ namespace SuperServer.userManager
             return name;
         }
 
-        public object GetData()
+        public ValueBase GetData()
         {
             Value<T> tmpData = new Value<T>();
 
@@ -78,7 +78,7 @@ namespace SuperServer.userManager
             return tmpData;
         }
 
-        public object GetChangeData()
+        public ValueChangeBase GetChangeData()
         {
             ValueChange<T> changeData = new ValueChange<T>();
 

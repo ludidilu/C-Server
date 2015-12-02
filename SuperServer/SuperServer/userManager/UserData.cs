@@ -11,8 +11,8 @@ namespace SuperServer.userManager
         public string userName;
         internal string passward;
 
-        private List<IBaseData> valueList = new List<IBaseData>();
-        private List<IBaseData> dicList = new List<IBaseData>();
+        private List<IValueData> valueList = new List<IValueData>();
+        private List<IDicValueData> dicList = new List<IDicValueData>();
 
         public UserData()
         {
@@ -22,20 +22,23 @@ namespace SuperServer.userManager
 
             foreach (FieldInfo info in fieldInfos)
             {
-                IBaseData unit = info.GetValue(this) as IBaseData;
+                object unit = info.GetValue(this);
 
-                if (unit != null) {
+                if(unit is IValueData)
+                {
+                    IValueData valueData = unit as IValueData;
 
-                    unit.SetName(info.Name);
+                    valueData.SetName(info.Name);
 
-                    if (unit is System.Collections.IEnumerable)
-                    {
-                        dicList.Add(unit);
-                    }
-                    else
-                    {
-                        valueList.Add(unit);
-                    }
+                    valueList.Add(valueData);
+                }
+                else if(unit is IDicValueData)
+                {
+                    IDicValueData dicData = unit as IDicValueData;
+
+                    dicData.SetName(info.Name);
+
+                    dicList.Add(dicData);
                 }
             }
         }
@@ -44,7 +47,7 @@ namespace SuperServer.userManager
         {
             SyncProto proto = new SyncProto();
 
-            foreach (IBaseData unit in valueList)
+            foreach (IValueData unit in valueList)
             {
                 if (unit.IsChange())
                 {
@@ -52,7 +55,7 @@ namespace SuperServer.userManager
                 }
             }
 
-            foreach (IBaseData unit in dicList)
+            foreach (IDicValueData unit in dicList)
             {
                 if (unit.IsChange())
                 {
@@ -67,12 +70,12 @@ namespace SuperServer.userManager
         {
             UserDataResultProto proto = new UserDataResultProto();
 
-            foreach (IBaseData unit in valueList)
+            foreach (IValueData unit in valueList)
             {
                 proto.valueList.Add(unit.GetData());
             }
 
-            foreach (IBaseData unit in dicList)
+            foreach (IDicValueData unit in dicList)
             {
                 proto.dicList.Add(unit.GetData());
             }

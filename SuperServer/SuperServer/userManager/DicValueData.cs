@@ -5,15 +5,10 @@ using SuperProto;
 
 namespace SuperServer.userManager
 {
-    internal enum CHANGE_TYPE
-    {
-        ADD,
-        REMOVE,
-        CHANGE
-    }
+
 
     [Serializable]
-    public class DicValueData<T> : Dictionary<int, T>,IBaseData where T : struct
+    public class DicValueData<T> : Dictionary<int, T>,IDicValueData where T : struct
     {
         private List<CHANGE_TYPE> typeList = new List<CHANGE_TYPE>();
 
@@ -88,7 +83,7 @@ namespace SuperServer.userManager
             return name;
         }
 
-        public object GetData()
+        public DicBase GetData()
         {
             Dic<T> data = new Dic<T>();
 
@@ -118,7 +113,7 @@ namespace SuperServer.userManager
             return data;
         }
 
-        public object GetChangeData()
+        public DicChangeBase GetChangeData()
         {
             DicChange<T> changeData = new DicChange<T>();
 
@@ -126,7 +121,7 @@ namespace SuperServer.userManager
 
             changeData.index = new int[indexList.Count];
 
-            changeData.type = new int[indexList.Count];
+            changeData.type = new CHANGE_TYPE[indexList.Count];
 
             changeData.data = new T[indexList.Count];
 
@@ -138,7 +133,7 @@ namespace SuperServer.userManager
 
                 CHANGE_TYPE type = typeList[i];
 
-                changeData.type[i] = (int)type;
+                changeData.type[i] = type;
 
                 if(type != CHANGE_TYPE.REMOVE)
                 {
