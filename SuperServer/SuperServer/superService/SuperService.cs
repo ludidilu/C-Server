@@ -10,25 +10,22 @@ namespace SuperServer.superService
         private readonly SuperLocker processLocker = new SuperLocker();
         private readonly SuperLocker callLocker = new SuperLocker();
 
+        private bool inProcessQueue = false;
+
         private List<Delegate> actionList = new List<Delegate>();
 
         public void Process<T>(Action<T> _action) where T : SuperService
         {
-            bool isInQueue = false;
-
             lock (processLocker)
             {
-                if (actionList.Count > 0)
-                {
-                    isInQueue = true;
-                }
-
                 actionList.Add(_action);
-            }
 
-            if (!isInQueue)
-            {
-                ThreadPool.QueueUserWorkItem(StartProcess<T>);
+                if (!inProcessQueue)
+                {
+                    inProcessQueue = true;
+
+                    ThreadPool.QueueUserWorkItem(StartProcess<T>);
+                }
             }
         }
 
@@ -37,6 +34,14 @@ namespace SuperServer.superService
             lock (callLocker)
             {
                 _action(this as T);
+            }
+        }
+
+        public R Call<T,R>(Func<T,R> _action) where T : SuperService
+        {
+            lock (callLocker)
+            {
+                return _action(this as T);
             }
         }
 
@@ -50,6 +55,8 @@ namespace SuperServer.superService
                 {
                     if (actionList.Count == 0)
                     {
+                        inProcessQueue = false;
+
                         return;
                     }
 
