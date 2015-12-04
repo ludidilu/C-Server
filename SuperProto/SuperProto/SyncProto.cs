@@ -85,13 +85,17 @@ namespace SuperProto
 
         public void SetData(object _obj)
         {
-            foreach (ValueChangeBase valueBase in valueChangeList)
+            for(int i = 0; i < valueChangeList.Count; i++)
             {
+                ValueChangeBase valueBase = valueChangeList[i];
+            
                 valueBase.SetData(_obj);
             }
 
-            foreach (DicChangeBase dicBase in dicChangeList)
+            for(int i = 0; i < dicChangeList.Count; i++)
             {
+                DicChangeBase dicBase = dicChangeList[i];
+           
                 dicBase.SetData(_obj);
             }
         }

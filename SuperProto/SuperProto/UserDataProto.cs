@@ -70,13 +70,17 @@ namespace SuperProto
 
         public void SetData(object _obj)
         {
-            foreach(ValueBase valueBase in valueList)
+            for(int i = 0; i < valueList.Count; i++)
             {
+                ValueBase valueBase = valueList[i];
+           
                 valueBase.SetData(_obj);
             }
 
-            foreach(DicBase dicBase in dicList)
+            for(int i = 0; i < dicList.Count; i++)
             {
+                DicBase dicBase = dicList[i];
+           
                 dicBase.SetData(_obj);
             }
         }

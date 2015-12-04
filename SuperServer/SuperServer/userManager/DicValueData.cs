@@ -95,15 +95,17 @@ namespace SuperServer.userManager
 
             int i = 0;
 
-            foreach(KeyValuePair<int, T> unit in this)
-            {
-                data.index[i] = unit.Key;
+            Dictionary<int, T>.Enumerator enumerator = GetEnumerator();
 
-                data.data[i] = unit.Value;
+            while (enumerator.MoveNext())
+            {
+                data.index[i] = enumerator.Current.Key;
+
+                data.data[i] = enumerator.Current.Value;
 
                 i++;
             }
-
+            
             if(indexList.Count > 0)
             {
                 indexList.Clear();

@@ -20,8 +20,10 @@ namespace SuperServer.userManager
 
             FieldInfo[] fieldInfos = type.GetFields();
 
-            foreach (FieldInfo info in fieldInfos)
+            for(int i = 0; i < fieldInfos.Length; i++)
             {
+                FieldInfo info = fieldInfos[i];
+            
                 object unit = info.GetValue(this);
 
                 if(unit is IValueData)
@@ -47,16 +49,20 @@ namespace SuperServer.userManager
         {
             SyncProto proto = new SyncProto();
 
-            foreach (IValueData unit in valueList)
+            for(int i = 0; i < valueList.Count; i++)
             {
+                IValueData unit = valueList[i];
+            
                 if (unit.IsChange())
                 {
                     proto.valueChangeList.Add(unit.GetChangeData());
                 }
             }
 
-            foreach (IDicValueData unit in dicList)
+            for(int i = 0; i < dicList.Count; i++)
             {
+                IDicValueData unit = dicList[i];
+           
                 if (unit.IsChange())
                 {
                     proto.dicChangeList.Add(unit.GetChangeData());
@@ -70,13 +76,17 @@ namespace SuperServer.userManager
         {
             UserDataResultProto proto = new UserDataResultProto();
 
-            foreach (IValueData unit in valueList)
+            for(int i = 0; i < valueList.Count; i++)
             {
+                IValueData unit = valueList[i];
+            
                 proto.valueList.Add(unit.GetData());
             }
 
-            foreach (IDicValueData unit in dicList)
+            for(int i = 0; i < dicList.Count; i++)
             {
+                IDicValueData unit = dicList[i];
+            
                 proto.dicList.Add(unit.GetData());
             }
 
