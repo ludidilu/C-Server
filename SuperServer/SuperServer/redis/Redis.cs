@@ -82,6 +82,8 @@ namespace SuperServer.redis
 
                 formatter.Serialize(stream, userData);
 
+                stream.Position = 0;
+
                 byte[] bytes = stream.GetBuffer();
                 
                 redisClient.Set(key, bytes);

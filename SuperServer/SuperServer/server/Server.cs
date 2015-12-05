@@ -4,11 +4,10 @@ using System.Net;
 using SuperServer.userManager;
 using SuperServer.superService;
 using SuperProto;
+using SuperServer.timer;
 
 namespace SuperServer.server
 {
-
-
     public class Server
     {
         private static Server _Instance;
@@ -32,10 +31,10 @@ namespace SuperServer.server
 
         internal static Func<UserData> getUserData;
 
-        public void Start<T,U>(string _path, int _port) where T : SuperUserService<U>,new() where U : UserData,new()
+        public void Start<T,U>(string _path, int _port, int _maxConnections) where T : SuperUserService<U>,new() where U : UserData,new()
         {
-            getUserService = delegate(){
-
+            getUserService = delegate()
+            {
                 return new T();
             };
 
@@ -50,12 +49,12 @@ namespace SuperServer.server
             };
 
             SuperUserServiceBase.SetDataHandle<UserDataProto>(callBack);
-
+            
             socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             socket.Bind(new IPEndPoint(IPAddress.Parse(_path), _port));
 
-            socket.Listen(1000);
+            socket.Listen(_maxConnections);
 
             BeginAccept();
         }

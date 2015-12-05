@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using SuperServer.locker;
+using SuperServer.superDebug;
 
 namespace SuperServer.superService
 {
@@ -34,6 +35,8 @@ namespace SuperServer.superService
 
             if (needCallThread)
             {
+                SuperDebug.Add();
+
                 ThreadPool.QueueUserWorkItem(StartProcess<T>);
             }
         }
@@ -64,6 +67,8 @@ namespace SuperServer.superService
 
             if (needCallThread)
             {
+                SuperDebug.Add();
+
                 ThreadPool.QueueUserWorkItem(StartProcess<T>);
             }
         }
@@ -107,6 +112,8 @@ namespace SuperServer.superService
                     if (processActionList.Count == 0 || callNum > 0)
                     {
                         inProcessQueue = false;
+
+                        SuperDebug.Del();
 
                         return;
                     }

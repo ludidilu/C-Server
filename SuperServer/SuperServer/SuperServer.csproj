@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="superDebug\SuperDebug.cs" />
     <Compile Include="locker\SuperLocker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="redis\Redis.cs" />
@@ -67,6 +68,9 @@
     <Compile Include="superService\SuperService.cs" />
     <Compile Include="superService\SuperUserService.cs" />
     <Compile Include="superService\SuperUserServiceBase.cs" />
+    <Compile Include="timer\ITimerUnit.cs" />
+    <Compile Include="timer\Timer.cs" />
+    <Compile Include="timer\TimerUnit.cs" />
     <Compile Include="userManager\DicValueData.cs" />
     <Compile Include="userManager\IDicValueData.cs" />
     <Compile Include="userManager\IValueData.cs" />
