@@ -59,6 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="csv\CsvBase.cs" />
+    <Compile Include="csv\StaticData.cs" />
     <Compile Include="superDebug\SuperDebug.cs" />
     <Compile Include="locker\SuperLocker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
