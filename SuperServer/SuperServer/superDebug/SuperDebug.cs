@@ -9,11 +9,18 @@ namespace SuperServer.superDebug
 
         private static int num = 0;
 
+        private static int maxNum = 0;
+
         public static void Add()
         {
             lock (locker)
             {
                 num++;
+
+                if(num > maxNum)
+                {
+                    maxNum = num;
+                }
             }
         }
 
@@ -29,7 +36,7 @@ namespace SuperServer.superDebug
         {
             lock (locker)
             {
-                Console.WriteLine("threadnum:{0}", num);
+                Console.WriteLine("threadMaxNum:{0}", maxNum);
             }
         }
     }

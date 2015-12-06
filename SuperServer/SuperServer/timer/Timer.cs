@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using SuperServer.superService;
 using SuperServer.locker;
@@ -32,7 +30,7 @@ namespace SuperServer.timer
         private SuperLocker locker = new SuperLocker();
 
         private List<ITimerUnit> list = new List<ITimerUnit>();
-
+        
         public void Start(int _timeSpan)
         {
             timeSpan = _timeSpan;
@@ -49,7 +47,7 @@ namespace SuperServer.timer
                 Thread.Sleep(timeSpan);
 
                 time = time + timeSpan;
-
+                
                 lock (locker)
                 {
                     for (int i = list.Count - 1; i > -1; i--)
