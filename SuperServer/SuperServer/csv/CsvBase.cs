@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace SuperServer.csv
+﻿namespace SuperServer.csv
 {
-    [Serializable]
     public class CsvBase
     {
         public int ID;

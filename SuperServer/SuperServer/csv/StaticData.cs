@@ -71,7 +71,7 @@ namespace SuperServer.csv
                     {
                         if (i == 2)
                         {
-                            string[] dataArr = lineStr.Split(",".ToCharArray());
+                            string[] dataArr = lineStr.Split(',');
 
                             infoArr = new FieldInfo[dataArr.Length];
 
@@ -82,7 +82,7 @@ namespace SuperServer.csv
                         }
                         else if (i > 2)
                         {
-                            string[] dataArr = lineStr.Split(",".ToCharArray());
+                            string[] dataArr = lineStr.Split(',');
 
                             T csv = new T();
 
@@ -163,7 +163,7 @@ namespace SuperServer.csv
 
                         if (!string.IsNullOrEmpty(_data))
                         {
-                            string[] strArr = _data.Split("$".ToCharArray());
+                            string[] strArr = _data.Split('$');
 
                             intResult = new int[strArr.Length];
 
@@ -187,7 +187,7 @@ namespace SuperServer.csv
 
                         if (!string.IsNullOrEmpty(_data))
                         {
-                            stringResult = _data.Split("$".ToCharArray());
+                            stringResult = _data.Split('$');
                         }
                         else
                         {
@@ -204,7 +204,7 @@ namespace SuperServer.csv
 
                         if (!string.IsNullOrEmpty(_data))
                         {
-                            string[] strArr = _data.Split("$".ToCharArray());
+                            string[] strArr = _data.Split('$');
 
                             boolResult = new bool[strArr.Length];
 
@@ -228,7 +228,7 @@ namespace SuperServer.csv
 
                         if (!string.IsNullOrEmpty(_data))
                         {
-                            string[] strArr = _data.Split("$".ToCharArray());
+                            string[] strArr = _data.Split('$');
 
                             floatResult = new float[strArr.Length];
 
