@@ -188,15 +188,15 @@ namespace SuperServer.server
             bool beginReceive = _data.type == PROTO_TYPE.S2C;
 
             Console.WriteLine("SendDataReal:" + _data.GetType().ToString());
-
-            socket.BeginSend(BitConverter.GetBytes(sendStream.GetBuffer().Length), 0, HEAD_LENGTH, SocketFlags.None, SendHeadEnd, beginReceive);
+            
+            socket.BeginSend(BitConverter.GetBytes(sendStream.Length), 0, HEAD_LENGTH, SocketFlags.None, SendHeadEnd, beginReceive);
         }
 
         private void SendHeadEnd(IAsyncResult _result)
         {
             socket.EndSend(_result);
             
-            socket.BeginSend(sendStream.GetBuffer(), 0, sendStream.GetBuffer().Length, SocketFlags.None, SendBodyEnd, _result.AsyncState);
+            socket.BeginSend(sendStream.GetBuffer(), 0, (int)sendStream.Length, SocketFlags.None, SendBodyEnd, _result.AsyncState);
         }
 
         private void SendBodyEnd(IAsyncResult _result)
