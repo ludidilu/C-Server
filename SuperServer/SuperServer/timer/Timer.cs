@@ -13,7 +13,7 @@ namespace SuperServer.timer
         {
             get
             {
-                if(_Instance == null)
+                if (_Instance == null)
                 {
                     _Instance = new Timer();
                 }
@@ -29,7 +29,7 @@ namespace SuperServer.timer
         private object locker = new object();
 
         private List<ITimerUnit> list = new List<ITimerUnit>();
-        
+
         public void Start(int _timeSpan)
         {
             timeSpan = _timeSpan;
@@ -46,7 +46,7 @@ namespace SuperServer.timer
                 Thread.Sleep(timeSpan);
 
                 time = time + timeSpan;
-                
+
                 lock (locker)
                 {
                     for (int i = list.Count - 1; i > -1; i--)
@@ -66,7 +66,7 @@ namespace SuperServer.timer
         {
             lock (locker)
             {
-                TimerUnit<T> unit = new TimerUnit<T>(_service,_callBack,time + _time);
+                TimerUnit<T> unit = new TimerUnit<T>(_service, _callBack, time + _time);
 
                 list.Add(unit);
             }
