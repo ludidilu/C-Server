@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using SuperServer.locker;
 
 namespace SuperServer.superService
 {
     public class SuperService
     {
-        private readonly SuperLocker processLocker = new SuperLocker();
-        private readonly SuperLocker callLocker = new SuperLocker();
+        private readonly object processLocker = new object();
+        private readonly object callLocker = new object();
 
         private bool inProcessQueue = false;//判断是否已经召唤线程去执行process队列了  使用这个属性一定要持有processLocker的锁
 
         private int callNum = 0;//记录call的等待数量  使用这个属性一定要持有processLocker的锁
 
-        private List<Delegate> processActionList = new List<Delegate>();
+        private Queue<Delegate> processActionList = new Queue<Delegate>();
 
         public void Process<T>(Action<T> _action) where T : SuperService
         {
@@ -22,7 +21,7 @@ namespace SuperServer.superService
 
             lock (processLocker)
             {
-                processActionList.Add(_action);
+                processActionList.Enqueue(_action);
 
                 if (!inProcessQueue && callNum == 0)
                 {
@@ -80,7 +79,7 @@ namespace SuperServer.superService
             EndCall<T>();
         }
 
-        public R Call<T,R>(Func<T,R> _action) where T : SuperService
+        public R Call<T, R>(Func<T, R> _action) where T : SuperService
         {
             R result;
 
@@ -111,9 +110,7 @@ namespace SuperServer.superService
                         return;
                     }
 
-                    action = processActionList[0] as Action<T>;
-
-                    processActionList.RemoveAt(0);
+                    action = processActionList.Dequeue() as Action<T>;
                 }
 
                 lock (callLocker)
