@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using SuperServer.superService;
-using SuperServer.locker;
 
 namespace SuperServer.timer
 {
@@ -27,7 +26,7 @@ namespace SuperServer.timer
 
         private int time;
 
-        private SuperLocker locker = new SuperLocker();
+        private object locker = new object();
 
         private List<ITimerUnit> list = new List<ITimerUnit>();
         

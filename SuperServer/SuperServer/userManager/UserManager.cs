@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using SuperServer.superService;
 using SuperServer.redis;
 using SuperServer.server;
-using SuperServer.locker;
 
 namespace SuperServer.userManager
 {
     internal class UserManager : SuperService
     {
-        private static readonly SuperLocker locker = new SuperLocker();
+        private static readonly object locker = new object();
 
         private static UserManager _Instance;
 

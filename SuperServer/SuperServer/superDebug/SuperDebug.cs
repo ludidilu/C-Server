@@ -1,11 +1,10 @@
 ﻿using System;
-using SuperServer.locker;
 
 namespace SuperServer.superDebug
 {
     public class SuperDebug
     {
-        private static SuperLocker locker = new SuperLocker();
+        private static object locker = new object();
 
         private static int num = 0;
 
