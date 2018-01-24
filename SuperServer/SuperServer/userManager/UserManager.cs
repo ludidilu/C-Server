@@ -39,18 +39,18 @@ namespace SuperServer.userManager
             {
                 SuperUserServiceBase userService = dic[_userName];
                 
-                Action<SuperUserServiceBase> callBack = delegate (SuperUserServiceBase _service)
+                Action callBack = delegate ()
                 {
-                    _service.Login(_userName, _password, _serverUnit);
+                    userService.Login(_userName, _password, _serverUnit);
                 };
 
                 userService.Process(callBack);
             }
             else
             {
-                Action<Redis> callBack = delegate (Redis _service)
+                Action callBack = delegate ()
                 {
-                    _service.Login(_userName, _password, _serverUnit);
+                    Redis.Instance.Login(_userName, _password, _serverUnit);
                 };
 
                 Redis.Instance.Process(callBack);

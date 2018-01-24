@@ -13,9 +13,9 @@ namespace SuperServer.superService
 
         private int callNum = 0;//记录call的等待数量  使用这个属性一定要持有processLocker的锁
 
-        private Queue<Delegate> processActionList = new Queue<Delegate>();
+        private Queue<Action> processActionList = new Queue<Action>();
 
-        public void Process<T>(Action<T> _action) where T : SuperService
+        public void Process(Action _action)
         {
             bool needCallThread = false;
 
@@ -33,7 +33,7 @@ namespace SuperServer.superService
 
             if (needCallThread)
             {
-                ThreadPool.QueueUserWorkItem(StartProcess<T>);
+                ThreadPool.QueueUserWorkItem(StartProcess);
             }
         }
 
@@ -45,7 +45,7 @@ namespace SuperServer.superService
             }
         }
 
-        private void EndCall<T>() where T : SuperService
+        private void EndCall()
         {
             bool needCallThread = false;
 
@@ -63,23 +63,23 @@ namespace SuperServer.superService
 
             if (needCallThread)
             {
-                ThreadPool.QueueUserWorkItem(StartProcess<T>);
+                ThreadPool.QueueUserWorkItem(StartProcess);
             }
         }
 
-        public void Call<T>(Action<T> _action) where T : SuperService
+        public void Call(Action _action)
         {
             BeginCall();
 
             lock (callLocker)
             {
-                _action(this as T);
+                _action();
             }
 
-            EndCall<T>();
+            EndCall();
         }
 
-        public R Call<T, R>(Func<T, R> _action) where T : SuperService
+        public R Call<R>(Func<R> _action)
         {
             R result;
 
@@ -87,19 +87,19 @@ namespace SuperServer.superService
 
             lock (callLocker)
             {
-                result = _action(this as T);
+                result = _action();
             }
 
-            EndCall<T>();
+            EndCall();
 
             return result;
         }
 
-        private void StartProcess<T>(object _param) where T : SuperService
+        private void StartProcess(object _param)
         {
             while (true)
             {
-                Action<T> action;
+                Action action;
 
                 lock (processLocker)
                 {
@@ -110,12 +110,12 @@ namespace SuperServer.superService
                         return;
                     }
 
-                    action = processActionList.Dequeue() as Action<T>;
+                    action = processActionList.Dequeue();
                 }
 
                 lock (callLocker)
                 {
-                    action(this as T);
+                    action();
                 }
             }
         }

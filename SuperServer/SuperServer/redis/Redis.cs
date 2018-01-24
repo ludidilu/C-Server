@@ -16,7 +16,7 @@ namespace SuperServer.redis
         {
             get
             {
-                if(_Instance == null)
+                if (_Instance == null)
                 {
                     _Instance = new Redis();
                 }
@@ -36,15 +36,15 @@ namespace SuperServer.redis
             redisClient = new RedisClient(_host, _port);
         }
 
-        internal void Login(string _userName,string _password,ServerUnit _serverUnit)
+        internal void Login(string _userName, string _password, ServerUnit _serverUnit)
         {
             string key = string.Format("userName_{0}", _userName);
-            
+
             if (redisClient.ContainsKey(key))
             {
                 string password = redisClient.Get<string>(string.Format("password_{0}", _userName));
 
-                if(password.Equals(_password))
+                if (password.Equals(_password))
                 {
                     byte[] bytes = redisClient.Get<byte[]>(key);
 
@@ -56,18 +56,18 @@ namespace SuperServer.redis
 
                     UserData userData = (UserData)formatter.Deserialize(stream);
 
-                    Action<UserManager> callBack = delegate (UserManager _service)
+                    Action callBack = delegate ()
                     {
-                        _service.GetLoginResult(userData, _serverUnit);
+                        UserManager.Instance.GetLoginResult(userData, _serverUnit);
                     };
 
                     UserManager.Instance.Process(callBack);
                 }
                 else
                 {
-                    Action<UserManager> callBack = delegate (UserManager _service)
+                    Action callBack = delegate ()
                     {
-                        _service.GetLoginResult(null, _serverUnit);
+                        UserManager.Instance.GetLoginResult(null, _serverUnit);
                     };
 
                     UserManager.Instance.Process(callBack);
@@ -84,16 +84,16 @@ namespace SuperServer.redis
                 stream.Position = 0;
 
                 byte[] bytes = stream.GetBuffer();
-                
+
                 redisClient.Set(key, bytes);
 
                 key = string.Format("password_{0}", _userName);
 
                 redisClient.Set(key, _password);
 
-                Action<UserManager> callBack = delegate (UserManager _service)
+                Action callBack = delegate ()
                 {
-                    _service.GetLoginResult(userData, _serverUnit);
+                    UserManager.Instance.GetLoginResult(userData, _serverUnit);
                 };
 
                 UserManager.Instance.Process(callBack);

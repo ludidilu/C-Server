@@ -62,7 +62,7 @@ namespace SuperServer.timer
             }
         }
 
-        public void DelayCall<T>(T _service, Action<T> _callBack, int _time) where T : SuperService
+        public void DelayCall<T>(T _service, Action _callBack, int _time) where T : SuperService
         {
             lock (locker)
             {

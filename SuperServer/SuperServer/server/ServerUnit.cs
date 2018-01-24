@@ -140,9 +140,9 @@ namespace SuperServer.server
 
             if (userService != null)
             {
-                Action<SuperUserServiceBase> callBack = delegate (SuperUserServiceBase _service)
+                Action callBack = delegate ()
                 {
-                    _service.GetData(_data);
+                    userService.GetData(_data);
                 };
 
                 userService.Process(callBack);
@@ -151,9 +151,9 @@ namespace SuperServer.server
             {
                 LoginProto loginProto = _data as LoginProto;
 
-                Action<UserManager> callBack = delegate (UserManager _service)
+                Action callBack = delegate ()
                 {
-                    _service.Login(loginProto.userName, loginProto.password, this);
+                    UserManager.Instance.Login(loginProto.userName, loginProto.password, this);
                 };
 
                 UserManager.Instance.Process(callBack);
